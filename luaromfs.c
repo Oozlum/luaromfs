@@ -63,7 +63,8 @@ static int c_extract_romfile(lua_State *L)
 }
 
 /* lua module entry. */
-static int luaopen_luaromfs(lua_State *L)
+__attribute__((visibility ("default")))
+int luaopen_luaromfs(lua_State *L)
 {
   const char *rom, *bootcode;
   size_t src_len;

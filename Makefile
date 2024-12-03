@@ -4,6 +4,7 @@ AR=ar
 
 CFLAGS=-Wall -fPIC -fvisibility=hidden
 INCLUDE=-I/usr/include/lua5.3
+LDFLAGS=-L/usr/lib/lua5.3
 
 AUTO_GEN= .lua_src.c
 
@@ -24,14 +25,17 @@ BIN_SRC= mkrom.c \
 BIN_HDR= sha256.h \
          aes.h
 
-all: mkrom libluaromfs.a example
+all: mkrom libluaromfs.a luaromfs.so example
 
 mkrom: Makefile ${BIN_SRC} ${BIN_HDR}
 	${CC} ${CFLAGS} -o $@ ${BIN_SRC} -lz
 
 libluaromfs.a: Makefile ${AUTO_GEN} ${LIB_SRC} ${LIB_HDR}
 	${CC} ${CFLAGS} ${INCLUDE} -c ${LIB_SRC}
-	${AR} rcs libluaromfs.a $(patsubst %.c,%.o,${LIB_SRC})
+	${AR} rcs $@ $(patsubst %.c,%.o,${LIB_SRC})
+
+luaromfs.so: Makefile ${AUTO_GEN} ${LIB_SRC} ${LIB_HDR}
+	${CC} ${CFLAGS} ${INCLUDE} -shared -o $@ ${LIB_SRC} ${LDFLAGS} -lz -llua
 
 .PHONY: always
 
@@ -47,5 +51,5 @@ clean:
 	rm -f *.o ${AUTO_GEN}
 
 distclean: clean
-	rm -f mkrom libluaromfs.a
+	rm -f mkrom libluaromfs.a luaromfs.so
 
