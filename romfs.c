@@ -126,7 +126,7 @@ static ROMHeader* create_rom(const char *content, size_t len)
   hdr = (ROMHeader*)malloc(sizeof(ROMHeader) + len);
   if (hdr)
   {
-    strcpy(hdr->magic, "ROM");
+    strncpy(hdr->magic, "ROM", 3);
     hdr->content_len = len;
     memcpy(hdr->content, content, len);
   }
